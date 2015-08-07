@@ -1,0 +1,36 @@
+body{
+	font-family:sans-serif;
+}
+
+.chat_box{
+	position:fixed;
+	bottom:0px;
+	right:20px;
+	background:white;
+	width 250px;
+	border-radius:5px 5px 0px 0px;
+}
+
+.chat_head{
+	background: #d35400;
+	padding:15px;
+	color:white;
+	border-radius:5px 5px 0px 0px;
+}
+
+.chat_body{
+	height:400px;
+}
+
+.user{
+	padding:20px;
+	background:pink;
+	position: relative;
+}
+
+/* actual chat box*/
+.chat_box, .msg_box{
+	background:white;
+	width:250px;
+	height:250px;
+}

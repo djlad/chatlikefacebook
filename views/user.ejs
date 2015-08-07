@@ -1,0 +1,26 @@
+<h1>hello <%= username %></h1>
+a
+<a href = "logout">logout</a>
+
+<script src = "https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<script src="/javascript/chatLibrary.js"></script>
+
+<div id="chatBox">
+</div>
+
+<script>
+	function writeMessages(messages){
+		console.log(messages);
+		for(var i=0;i<messages.length;i++){
+			$("#chatBox").append(messages[i].from+": "+messages[i].content+"<br>");
+		}
+	}
+	setInterval(function(){
+		chat.getAllMessages(function(messages){
+			console.log("checked for chat messages");
+			var messageArray = JSON.parse(messages.responseText);
+			writeMessages(messageArray);
+		})
+	},2500);
+</script>
