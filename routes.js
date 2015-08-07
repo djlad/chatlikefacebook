@@ -13,7 +13,6 @@ module.exports = function(app,passport){
 
 	function makeAccount(username,password,res){
 		Account.count({username:username},function(er,count){
-			console.log(count);
 			if(!count==0){
 				res.send("username already exists");
 				return false;
@@ -22,7 +21,7 @@ module.exports = function(app,passport){
 				newAccount.username = username;
 				newAccount.password = newAccount.generateHash(password);
 				newAccount.save();
-				res.send("new account created probably");
+				res.send("new account created probably <a href = '/login'>login here</a>");
 				return true;
 			}
 		})
@@ -59,12 +58,7 @@ module.exports = function(app,passport){
 	})
 
 	app.post("/signup",function(req,res){
-		if(makeAccount(req.body.username,req.body.password)){
-			res.send("new account created probably");
-		}else{
-			res.send("username already exists");
-		}
-
+		makeAccount(req.body.username,req.body.password,res);
 		
 	});
 
@@ -112,7 +106,5 @@ module.exports = function(app,passport){
 	});
 
 
-	app.listen(3000,function(){
-		console.log("listenning");
-	})
+
 }
