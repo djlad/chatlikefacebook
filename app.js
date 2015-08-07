@@ -2,12 +2,16 @@ var express = require("express");
 var passport = require("./auth.js");
 var passportLocal = require("passport-local");
 var app = express();
+var io = require("socket.io");
+
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 //routes
 var routes = require("./routes.js");
 
-//models
-
+//sockets function
+var addSockets = require("./socketEvents.js");
 
 //utilities
 var bodyParser = require("body-parser");
@@ -37,3 +41,13 @@ app.use(passport.session());
 
 //routes
 routes(app,passport);
+
+//add socket events
+addSockets(io);
+
+
+
+
+http.listen(3000,function(){
+	console.log("listenning");
+})
