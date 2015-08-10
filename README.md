@@ -15,3 +15,5 @@ sign in at /login
 
 example chat object in /user
 send message with chat.sendMessage(username,message);
+
+make sure to change the secret key in app.js
