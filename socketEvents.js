@@ -4,7 +4,15 @@ module.exports = function(io){
 
 	io.on("connection",function(socket){
 		socket.on("newChatListener",function(data){
-			console.log("making new chat listener"+data);
+			console.log(user2Sock);
+			console.log(sock2User);
 		});
+		socket.on("disconnect",function(){
+			var username = sock2User[socket.id];
+			if(! typeof(username) == "undefined"){
+				delete sock2User[socket.id];
+				delete user2Sock[username][socket.id];
+			}
+		})
 	});
 }

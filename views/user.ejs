@@ -20,6 +20,7 @@ a
 			$("#chatBox").append(messages[i].from+": "+messages[i].content+"<br>");
 		}
 	}
+	/*
 	setInterval(function(){
 		chat.getAllMessages(function(messages){
 			console.log("checked for chat messages");
@@ -27,8 +28,32 @@ a
 			writeMessages(messageArray);
 		})
 	},2000);
+	*/
+	function registerNewChatListener(){
+		ajaxRequest("GET","/newChatListener?socketid="+socket.id,function(){});
+	}
+
+	function getNewMessages(callBack){
+		chat.getAllMessages(function(messages){
+			console.log("checked for chat messages");
+			var messageArray = JSON.parse(messages.responseText);
+			callBack(messageArray);
+		})
+	}
+	getNewMessages(function(messageArray){
+		writeMessages(messageArray);
+	});
 
 	//socket.io
 	var socket = io();
-	socket.emit("newChatListener","groan")
+	socket.on("connect",function(){
+		registerNewChatListener();
+	})
+
+	socket.on("newMessage",function(){
+		console.log("newMessage fired")
+		getNewMessages(function(messageArray){
+			writeMessages(messageArray);
+		});
+	});
 </script>

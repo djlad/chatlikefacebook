@@ -4,7 +4,9 @@ var Account = require("./models/account.js");
 var Message = require("./models/message.js");
 var url = require("url");
 
-module.exports = function(app,passport){
+module.exports = function(app,passport,io){
+	
+
 	//check if logged in send to login if not else go to user
 	function checkAuth(req,res){
 		if(req.isAuthenticated())res.redirect("/user");
@@ -27,13 +29,21 @@ module.exports = function(app,passport){
 		})
 	}
 
+	function tellUserToCheckForMessages(user){
+		for(sock in user2Sock[user]){
+			io.sockets.connected[sock].emit('newMessage',"nm");
+		}
+	}
+
 	function sendMessage(to,from,content){
 		newMessage = new Message();
 		newMessage.to = to;
 		newMessage.from = from;
 		newMessage.content = content;
 		newMessage.date = (new Date()).getTime();
-		newMessage.save();
+		newMessage.save(function(){
+			tellUserToCheckForMessages(to);
+		});
 	};
 
 	
@@ -64,7 +74,8 @@ module.exports = function(app,passport){
 
 	//main page
 	app.get("/user",function(req,res){
-		res.render("user",{username:req.user.id});
+		if(req.isAuthenticated())res.render("user",{username:req.user.id});
+		else res.redirect("/login");
 	});
 
 	//get messages
@@ -92,6 +103,21 @@ module.exports = function(app,passport){
 		var content = urlGetData.content;//req.body.content;
 		res.send(to + from + content);
 		sendMessage(to,from,content);
+	});
+
+	//adds a socket to chat object so server knows which socket is which username
+	app.get("/newChatListener",function(req,res){
+		if(typeof(req.user) == "undefined"){
+			res.send("nice try");
+		}else{
+			socketID = url.parse(req.url,true).query.socketid;
+
+			if(typeof(user2Sock[req.user.id]) == "undefined"){
+				user2Sock[req.user.id] = {};
+			}
+			user2Sock[req.user.id][socketID] = socketID;
+			sock2User[socketID] = req.user.id;
+		}
 	});
 
 	//logout

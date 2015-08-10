@@ -18,7 +18,10 @@ var bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
 var expressSession = require("express-session");
 
-
+//actual variables
+//holds current socket ids used by usernames required in routes and socketEvents
+user2Sock = {};
+sock2User = {};
 
 
 app.set("view engine","ejs");
@@ -40,7 +43,7 @@ app.use(passport.session());
 
 
 //routes
-routes(app,passport);
+routes(app,passport,io);
 
 //add socket events
 addSockets(io);
